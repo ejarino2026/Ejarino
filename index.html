@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اجارینو</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:Tahoma,Arial,sans-serif;
+background:#f5f6f8;
+color:#222
+}
+header{
+background:#fff;
+padding:18px;
+position:sticky;
+top:0;
+z-index:10;
+box-shadow:0 2px 10px #0001
+}
+.logo{
+font-size:28px;
+font-weight:bold;
+text-align:center;
+margin-bottom:15px
+}
+.search{
+width:100%;
+padding:14px;
+border:1px solid #ddd;
+border-radius:14px;
+font-size:15px;
+outline:none
+}
+.container{
+padding:18px;
+max-width:700px;
+margin:auto
+}
+.categories{
+display:flex;
+gap:8px;
+overflow:auto;
+padding:5px 0 15px
+}
+.cat{
+background:#fff;
+border:1px solid #ddd;
+border-radius:20px;
+padding:9px 15px;
+white-space:nowrap;
+cursor:pointer
+}
+.cat.active{
+background:#222;
+color:white
+}
+.hero{
+background:#222;
+color:#fff;
+border-radius:20px;
+padding:25px 20px;
+margin-bottom:20px
+}
+.hero h1{margin:0 0 10px;font-size:25px}
+.hero p{margin:0;line-height:1.8;color:#ddd}
+.btn{
+border:0;
+background:#222;
+color:white;
+padding:13px 18px;
+border-radius:13px;
+font-size:15px;
+cursor:pointer
+}
+.hero .btn{
+background:white;
+color:#222;
+margin-top:15px
+}
+.section-title{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:20px 0 12px
+}
+.section-title h2{font-size:20px}
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
+}
+.card{
+background:white;
+border-radius:17px;
+overflow:hidden;
+box-shadow:0 2px 10px #0000000d
+}
+.card-img{
+height:130px;
+background:#e9eaed;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:45px
+}
+.card-body{padding:12px}
+.card h3{font-size:16px;margin:0 0 8px}
+.card p{margin:5px 0;color:#777;font-size:13px}
+.price{
+font-weight:bold;
+color:#111;
+font-size:15px
+}
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:#0008;
+z-index:100;
+align-items:flex-end;
+justify-content:center
+}
+.modal-box{
+background:white;
+width:100%;
+max-width:700px;
+border-radius:25px 25px 0 0;
+padding:22px;
+max-height:90vh;
+overflow:auto
+}
+.modal-box h2{margin-top:0}
+input,select{
+width:100%;
+padding:13px;
+margin:7px 0 12px;
+border:1px solid #ddd;
+border-radius:12px;
+font-size:15px
+}
+.close{
+float:left;
+font-size:25px;
+cursor:pointer
+}
+nav{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+height:65px;
+background:white;
+display:flex;
+justify-content:space-around;
+align-items:center;
+box-shadow:0 -2px 10px #0001;
+z-index:20
+}
+nav button{
+background:none;
+border:0;
+font-size:13px;
+cursor:pointer
+}
+.empty{
+text-align:center;
+padding:30px;
+color:#888;
+grid-column:1/-1
+}
+@media(max-width:400px){
+.grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">اجارینو 🏠</div>
+<input class="search" id="search" placeholder="چی می‌خوای اجاره کنی؟">
+</header>
+
+<main class="container">
+
+<div class="hero">
+<h1>هر چیزی داری، اجاره بده!</h1>
+<p>در اجارینو وسایل مورد نیازت رو پیدا کن یا وسایلی که داری رو برای اجاره قرار بده.</p>
+<button class="btn" onclick="openModal()">+ ثبت وسیله برای اجاره</button>
+</div>
+
+<div class="categories">
+<button class="cat active" onclick="filterCat('همه',this)">همه</button>
+<button class="cat" onclick="filterCat('لوازم خانگی',this)">🏠 لوازم خانگی</button>
+<button class="cat" onclick="filterCat('خودرو',this)">🚗 خودرو</button>
+<button class="cat" onclick="filterCat('ورزشی',this)">🏋️ ورزشی</button>
+<button class="cat" onclick="filterCat('دیجیتال',this)">📱 دیجیتال</button>
+<button class="cat" onclick="filterCat('ابزار',this)">🔧 ابزار</button>
+</div>
+
+<div class="section-title">
+<h2>وسایل نزدیک شما</h2>
+<span id="count"></span>
+</div>
+
+<div class="grid" id="items"></div>
+
+</main>
+
+<nav>
+<button onclick="window.scrollTo({top:0,behavior:'smooth'})">🏠<br>خانه</button>
+<button onclick="document.getElementById('search').focus()">🔍<br>جستجو</button>
+<button onclick="openModal()">➕<br>اجاره بده</button>
+<button onclick="alert('بخش حساب کاربری به‌زودی فعال می‌شود')">👤<br>حساب من</button>
+</nav>
+
+<div class="modal" id="modal">
+<div class="modal-box">
+
+<span class="close" onclick="closeModal()">×</span>
+<h2>ثبت وسیله برای اجاره</h2>
+
+<label>نام وسیله</label>
+<input id="name" placeholder="مثلاً دریل برقی">
+
+<label>دسته‌بندی</label>
+<select id="category">
+<option>لوازم خانگی</option>
+<option>خودرو</option>
+<option>ورزشی</option>
+<option>دیجیتال</option>
+<option>ابزار</option>
+</select>
+
+<label>قیمت اجاره روزانه (تومان)</label>
+<input id="price" type="number" placeholder="مثلاً 300000">
+
+<label>شهر</label>
+<input id="city" placeholder="مثلاً تهران">
+
+<button class="btn" style="width:100%" onclick="addItem()">ثبت وسیله</button>
+
+</div>
+</div>
+
+<script>
+
+let items=[
+{name:"دوربین حرفه‌ای",category:"دیجیتال",price:"800,000",city:"تهران",icon:"📷"},
+{name:"دریل برقی",category:"ابزار",price:"250,000",city:"تهران",icon:"🔧"},
+{name:"دوچرخه کوهستان",category:"ورزشی",price:"300,000",city:"تهران",icon:"🚲"},
+{name:"مبل راحتی",category:"لوازم خانگی",price:"500,000",city:"تهران",icon:"🛋️"},
+{name:"کنسول بازی",category:"دیجیتال",price:"600,000",city:"تهران",icon:"🎮"},
+{name:"ماشین",category:"خودرو",price:"2,500,000",city:"تهران",icon:"🚗"}
+];
+
+let currentCategory="همه";
+
+function render(){
+
+let search=document.getElementById("search").value.toLowerCase();
+
+let filtered=items.filter(x=>{
+
+let categoryOK=currentCategory==="همه" || x.category===currentCategory;
+
+let searchOK=
+x.name.toLowerCase().includes(search) ||
+x.city.toLowerCase().includes(search);
+
+return categoryOK && searchOK;
+
+});
+
+document.getElementById("count").innerText=filtered.length+" مورد";
+
+let box=document.getElementById("items");
+
+if(filtered.length===0){
+box.innerHTML='<div class="empty">موردی پیدا نشد 😕</div>';
+return;
+}
+
+box.innerHTML=filtered.map((x,i)=>`
+
+<div class="card" onclick
